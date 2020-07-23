@@ -6,8 +6,8 @@ public class Camion extends Masina {
 
     private Integer tonaj;
 
-    public Camion(Integer ID, Integer nrKilometri, Integer anFabricatie, Boolean esteDiesel, Integer tonaj) {
-        super(ID, nrKilometri, anFabricatie, esteDiesel);
+    public Camion(Integer nrKilometri, Integer anFabricatie, Boolean esteDiesel, Integer tonaj) {
+        super(nrKilometri, anFabricatie, esteDiesel);
 
         if(tonaj <= 0 || tonaj > 100) {
             throw new IllegalArgumentException("Tonaj invalid.");

@@ -35,23 +35,26 @@ public abstract class Angajat {
         // primesc datele de nastere si angajare in format string
         // trebuie convertite in Date
         Date currentDate = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         Date angTemp = null, nasTemp = null;
         try {
             nasTemp = sdf.parse(dataNastere);
             angTemp = sdf.parse(dataAngajare);
             if(angTemp.after(currentDate)) {
-                // hire date is after current date
+                // data de angajare este dupa data curenta
                 throw new IllegalArgumentException("Data angajare nu poate fi in viitor.");
             }
             if(aniBetweenDates(angTemp, nasTemp) < 18) {
-                throw new IllegalArgumentException("Varsta nu paote fi mai mica de 18 ani.");
+                throw new IllegalArgumentException("Varsta nu poate fi mai mica de 18 ani.");
             }
+
         }
         catch (ParseException e) {
             System.out.println(e.getMessage());
         }
 
+        // datele primite au fost verificate,
+        // pot sa termin crearea angajatului
         this.ID = ID;
         this.nume = nume;
         this.prenume = prenume;
@@ -71,13 +74,17 @@ public abstract class Angajat {
         return zile / 365;
     }
 
-    private Integer calculeazaSalariu() {
+    public Integer calculeazaSalariu() {
         Integer aniVechime = aniBetweenDates(this.dataAngajare, new Date())
                                 .intValue();
 
         Double salariu = aniVechime * this.coeficientAngajat * 1000;
 
         return salariu.intValue();
+    }
+
+    public Integer getID() {
+        return ID;
     }
 
     public String getNume() {
@@ -110,5 +117,16 @@ public abstract class Angajat {
 
     public void setDataAngajare(Date dataAngajare) {
         this.dataAngajare = dataAngajare;
+    }
+
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return  "ID=" + ID +
+                ", nume='" + nume + '\'' +
+                ", prenume='" + prenume + '\'' +
+                ", dataNastere=" + sdf.format(dataNastere)+
+                ", dataAngajare=" + sdf.format(dataAngajare)  +
+                ", coeficientAngajat=" + coeficientAngajat;
     }
 }

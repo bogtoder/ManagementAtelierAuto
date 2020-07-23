@@ -6,8 +6,8 @@ public class Autobuz extends Masina {
 
     private Integer nrLocuri;
 
-    public Autobuz(Integer ID, Integer nrKilometri, Integer anFabricatie, Boolean esteDiesel, Integer nrLocuri) {
-        super(ID, nrKilometri, anFabricatie, esteDiesel);
+    public Autobuz(Integer nrKilometri, Integer anFabricatie, Boolean esteDiesel, Integer nrLocuri) {
+        super(nrKilometri, anFabricatie, esteDiesel);
 
         if(nrLocuri <= 0 || nrLocuri > 100) {
             throw new IllegalArgumentException("Nr de locuri invalid.");

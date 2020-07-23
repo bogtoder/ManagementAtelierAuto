@@ -2,13 +2,14 @@ package bogtod.masini;
 
 public abstract class Masina {
 
+    private static Integer masiniCounter = 0;
     private Integer ID;
     private Integer nrKilometri;
     private Integer anFabricatie;
     private Boolean esteDiesel;
 
-    public Masina(Integer ID, Integer nrKilometri, Integer anFabricatie, Boolean esteDiesel) {
-        this.ID = ID;
+    public Masina(Integer nrKilometri, Integer anFabricatie, Boolean esteDiesel) {
+        this.ID = ++masiniCounter;
         this.nrKilometri = nrKilometri;
         this.anFabricatie = anFabricatie;
         this.esteDiesel = esteDiesel;
@@ -48,4 +49,11 @@ public abstract class Masina {
 
     public abstract Double calculeazaAsigurare(Boolean discount);
 
+    @Override
+    public String toString() {
+        return  "ID=" + ID +
+                ", nrKilometri=" + nrKilometri +
+                ", anFabricatie=" + anFabricatie +
+                ", esteDiesel=" + esteDiesel;
+    }
 }

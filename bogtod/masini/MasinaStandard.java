@@ -6,8 +6,8 @@ public class MasinaStandard extends Masina {
 
     private String transmisie;
 
-    public MasinaStandard(Integer ID, Integer nrKilometri, Integer anFabricatie, Boolean esteDiesel, String transmisie) {
-        super(ID, nrKilometri, anFabricatie, esteDiesel);
+    public MasinaStandard(Integer nrKilometri, Integer anFabricatie, Boolean esteDiesel, String transmisie) {
+        super(nrKilometri, anFabricatie, esteDiesel);
 
         if(!transmisie.toLowerCase().equals("manuala") && !transmisie.toLowerCase().equals("automata"))
             throw new IllegalArgumentException("Transmisia poate fi doar manuala sau automata.");
