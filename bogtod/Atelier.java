@@ -19,6 +19,8 @@ public class Atelier {
     private List<Programare> listaAsteptare;
     private List<ProgramareSpeciala> listAsteptareSpeciala;
 
+    private List<Masina> toateMasinile;
+
     private Boolean esteDeschis;
 
     private Scanner scn;
@@ -28,6 +30,7 @@ public class Atelier {
         this.programAtelier = new HashMap<>();
         this.listaAsteptare = new LinkedList<>();
         this.listAsteptareSpeciala = new LinkedList<>();
+        this.toateMasinile = new LinkedList<>();
 
         this.esteDeschis = false;
         this.scn = new Scanner(System.in);
@@ -67,11 +70,13 @@ public class Atelier {
         this.esteDeschis = true;
     }
 
-    public void adaugaAngajati(Angajat angManual) {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+    public void afiseazaAngajati() {
+        AngajatiApp.getInstance().afiseazaAngajati(listaAngajati);
+    }
 
+    public void adaugaAngajati(Angajat angManual) {
         // functie folosita la test
+
         this.listaAngajati.add(angManual);
         this.programAtelier.put(angManual, new LinkedList<>());
 
@@ -79,8 +84,42 @@ public class Atelier {
         this.esteDeschis = true;
     }
 
+    public void eliminaAngajat() {
+        if(listaAngajati.isEmpty()) {
+            System.out.println("Atelierul este gol.");
+            return;
+        }
+        AngajatiApp.getInstance().stergeAngajat(listaAngajati);
+
+        if(listaAngajati.isEmpty()) {
+            this.esteDeschis = false; // daca au plecat toti, atelierul este inchis
+        }
+    }
+
+    public void modificaAngajat() {
+        if(listaAngajati.isEmpty()) {
+            System.out.println("Atelierul este gol.");
+            return;
+        }
+        AngajatiApp.getInstance().modificaAngajat(listaAngajati);
+    }
+
+    public void calculeazaSalariuAngajat() {
+        if(listaAngajati.isEmpty()) {
+            System.out.println("Nu exista angajati.");
+            return;
+        }
+        AngajatiApp.getInstance().calculeazaSalariu(listaAngajati);
+    }
+
     public void programeazaMasina() {
+        if(!this.esteDeschis) {
+            System.out.println("Ne pare rau, momentan este inchis.");
+            return;
+        }
+
         Programare progNoua = MasiniApp.getInstance().inregistreazaMasina();
+        toateMasinile.add(progNoua.getMasina());
 
         System.out.println("Doriti un angajat anume? (da/nu): "); String rasp = scn.next().toLowerCase();
 
@@ -161,6 +200,10 @@ public class Atelier {
         }
     }
 
+    public void calculeazaPolitaAsigurare() {
+        MasiniApp.getInstance().afiseazaPolitaAsigurarePtID(toateMasinile);
+    }
+
     private Boolean sePoateProgramaLa(Angajat ang, Programare prog) {
         // sunt verificate restrictiile cu privire la aglomerarea unui angajat
 
@@ -188,7 +231,7 @@ public class Atelier {
         // aici se termina programari si se iau altele de catre angajati
 
         // se efectuaza lucrari la reparatii si vedem daca s-a eliberat ceva
-        // reparatiile evolueaza secvential in ordinea in care au intrat in coada
+        // reparatiile evolueaza secvential in ordinea cozii
 
         for(Angajat ang : listaAngajati) {
             // progresez la reparatiile existente
@@ -196,11 +239,11 @@ public class Atelier {
                 programAtelier.get(ang).peek().updateDurata();
 
             // elimin lucrarile care s-au terminat acum
-            if(programAtelier.get(ang).peek() == null ||
-                programAtelier.get(ang).peek().getTimpNecesarLucrare() == 0) {
+            if(programAtelier.get(ang).peek() == null) continue;
+            if(programAtelier.get(ang).peek().getTimpNecesarLucrare() == 0) {
                 System.out.println("S-au finalizat reparatiile la masina cu ID-ul " +
                         programAtelier.get(ang).peek().getMasina().getID() + ", va uram o zi buna.");
-                programAtelier.get(ang).poll();
+                programAtelier.get(ang).remove();
             }
         }
 
@@ -212,6 +255,7 @@ public class Atelier {
                     prog.estimeazaDurata(); // estimam cat va dura reparatia
 
                     programAtelier.get(ang).add(prog);
+                    listaAsteptare.remove(prog);
 
                     System.out.println("Masina cu ID " + prog.getMasina().getID() + " a fost alocata " +
                             "angajatului " + ang.getID() + "-" + ang.getNume());
@@ -227,6 +271,7 @@ public class Atelier {
                 programAtelier.get(progSpec.getAngajatAles()).add(progSpec.getProgSimpla());
 
                 progSpec.getProgSimpla().estimeazaDurata(); // estimam durata reparatiilor
+                listAsteptareSpeciala.remove(progSpec);
 
                 System.out.println("Masina cu ID " + progSpec.getProgSimpla().getMasina().getID() + " a fost alocata " +
                         "angajatului " + progSpec.getAngajatAles().getID() + "-" + progSpec.getAngajatAles().getNume());
@@ -235,15 +280,5 @@ public class Atelier {
             }
         }
     }
-
-    public Boolean existaLucrari() {
-        for(Angajat a : listaAngajati) {
-            System.out.println("da coaie inca exista");
-            if(!(programAtelier.get(a).peek() == null))
-                return true;
-        }
-        return false;
-    }
-
 
 }

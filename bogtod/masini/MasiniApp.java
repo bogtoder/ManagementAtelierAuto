@@ -2,6 +2,7 @@ package bogtod.masini;
 
 import bogtod.programari.Programare;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class MasiniApp {
@@ -20,6 +21,30 @@ public class MasiniApp {
             instance = new MasiniApp();
         }
         return instance;
+    }
+
+    public Masina cautaMasinaDupaID(List<Masina> listaMasini) {
+        Masina temp = null;
+        while(temp == null) {
+            System.out.print("ID ales: "); Integer ID = scn.nextInt();
+            for (Masina a : listaMasini) {
+                if (a.getID() == ID) {
+                    temp = a;
+                    break;
+                }
+            }
+            if(temp == null) {
+                System.out.println("ID-ul ales nu exista, incercati inca o data.");
+            }
+        }
+        return temp;
+    }
+
+    public void afiseazaMasini(List<Masina> listaMasini) {
+        System.out.println("Exista urmatorii angajati: ");
+        for(Masina a : listaMasini) {
+            System.out.println(a.toString());
+        }
     }
 
     public Programare inregistreazaMasina() {
@@ -97,6 +122,16 @@ public class MasiniApp {
 
         // returnez masina cu toate datele
         return new Programare(masNoua, tipMasina);
+    }
+
+    public void afiseazaPolitaAsigurarePtID(List<Masina> listaMasini) {
+        System.out.println("Masinile inregistrate pana acum:");
+        afiseazaMasini(listaMasini);
+
+        Masina temp = cautaMasinaDupaID(listaMasini);
+
+        System.out.println("Masina " + temp.toString() + " are polita de asigurare in valoare de "
+                + temp.calculeazaAsigurare(false) + " (" + temp.calculeazaAsigurare(true) + " cu discount)");
     }
 
 }
